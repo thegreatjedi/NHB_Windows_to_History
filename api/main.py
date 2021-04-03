@@ -1,4 +1,6 @@
-from fastapi import FastAPI, Request
+from shutil import copyfileobj
+
+from fastapi import FastAPI, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -15,3 +17,14 @@ async def root(request: Request):
     return templates.TemplateResponse('index.html', {
         'request': request
     })
+
+
+@app.post('/api/uploadFile')
+async def upload_file(file: UploadFile = Form(...)):
+    if file.content_type.startswith('image/'):
+        with open(f'./static/uploads/{file.filename}', 'wb') as buffer:
+            copyfileobj(file.file, buffer)
+            
+    return {
+        'uploadSuccess': True
+    }
