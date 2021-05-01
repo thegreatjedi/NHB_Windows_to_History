@@ -1,6 +1,10 @@
+from collections import Counter
+from itertools import chain, product
 from pathlib import Path
+from typing import List, Set
 
 import numpy as np
+import spacy
 import tensorflow as tf
 import tensorflow.keras as tfkeras
 from gensim.models import KeyedVectors
@@ -9,12 +13,8 @@ from nltk.stem.lancaster import LancasterStemmer
 from tensorflow.keras.preprocessing.text import Tokenizer
 
 from .attn_classes import CNNEncoder, RNNDecoder
-from .constants import EMBEDDING_DIM, TARGET_SIZE, TOKENIZER_FILE, UNITS, \
-    VOCAB_SIZE, MAX_LEN, GLOVE_FILE, ENCODER_FILE, DECODER_FILE
-
-from collections import Counter, deque
-from itertools import chain, product
-import spacy
+from .constants import DECODER_FILE, EMBEDDING_DIM, ENCODER_FILE, GLOVE_FILE, \
+    MAX_LEN, TARGET_SIZE, TOKENIZER_FILE, UNITS, VOCAB_SIZE
 
 # Initialise Tensorflow configurations
 for gpu in tf.config.experimental.list_physical_devices('GPU'):
@@ -23,6 +23,8 @@ for gpu in tf.config.experimental.list_physical_devices('GPU'):
 ps = PorterStemmer()
 lc = LancasterStemmer()
 sb = SnowballStemmer("english")
+model = spacy.load('en_core_web_lg')
+model.Defaults.stop_words |= {',', '.'}
 
 
 def build_matrix(word_index, embed_idx, vec_dim):
@@ -94,9 +96,7 @@ def generate_caption(image):
          if word != '<start>' and word != '<end>' and word != '<unk>'])
 
 
-def get_similar_words(captions: deque, labels: set) -> set:
-    model = spacy.load('en_core_web_lg')
-    model.Defaults.stop_words |= {',', '.'}
+def get_similar_words(captions: List[str], labels: Set[str]) -> Set[str]:
     lbl_doc = model(' '.join(labels))
     cap_doc = [token for token in model(' '.join(captions))
                if not token.is_stop and not token.is_punct
@@ -110,12 +110,12 @@ def get_similar_words(captions: deque, labels: set) -> set:
     similar_pairs1 = [
         (token1, token2) for token1, token2 in product(cap_doc, lbl_doc)
         if token1 != token2 and token1.similarity(token2) > 0.7
-           and token1.similarity(token2) != 1
+        and token1.similarity(token2) != 1
     ]
     similar_pairs2 = [
         (token1, token2) for token1, token2 in product(cap_doc, cap_doc)
         if token1 != token2 and token1.similarity(token2) > 0.7
-           and token1.similarity(token2) != 1
+        and token1.similarity(token2) != 1
     ]
     
     similar_words1 = {
@@ -125,6 +125,4 @@ def get_similar_words(captions: deque, labels: set) -> set:
         token.text for token_pair in similar_pairs2 for token in token_pair
     }
     
-    return {
-        word for word in chain(labels, similar_words1, similar_words2)
-    }
+    return {word for word in chain(labels, similar_words1, similar_words2)}

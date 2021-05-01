@@ -8,10 +8,10 @@
 
 ## Introduction
 Windows to History is a Capstone Project sponsored by the Singapore
-National Heritage Board. It is completed by Koh Sook Bin and Yeo Whye
-Chung Nelson as part of the course requirements for the Master of
-Technology in Intelligent Systems programme by the Institute of Systems
-Science of the National University of Singapore.
+National Heritage Board. It is completed as part of the course
+requirements for the Master of Technology in Intelligent Systems
+programme by the National University of Singapore Institute of Systems
+Science.
 
 In this project, a web application is developed to demonstrate the use
 of machine learning techniques to implement image captioning via an
@@ -39,17 +39,17 @@ This application is built using the following frameworks:
    Mode if necessary) and install pipenv.
    
        pip install pipenv
-3. Clone this repository to your local file directory. You can do this
-   using 1 of 2 methods:
+3. Clone this repository to your preferred location in the local file
+   directory. You can do this using 1 of 2 methods:
    1. Download directly from
       [Github](https://github.com/thegreatjedi/NHB_Windows_to_History)
-      in a web browser.
+      in a web browser as a ZIP file, then unzip it.
 
       ![screenshot1.png](readme_images/screenshot1.png)
    2. If you have Git installed, you can clone the repository via the
       Command Prompt.
       
-       git clone https://github.com/thegreatjedi/NHB_Windows_to_History.git
+          git clone https://github.com/thegreatjedi/NHB_Windows_to_History.git
 4. Once downloaded, navigate to the folder location of the downloaded
    repository in the Command Prompt. For example,
       
@@ -62,14 +62,18 @@ This application is built using the following frameworks:
        pipenv install --ignore-pipfile
    This will install the following key packages and their dependencies:
    * aiofiles
+   * async-exit-stack
+   * async-generator
    * efficientnet
    * fastapi
    * gensim
    * jinja2
    * nltk
-   * object-detection
+   * pillow
+   * python-levenshtein
    * python-multipart
    * spacy
+   * sqlalchemy
    * tensorflow
    * uvicorn
 6. Enter the following commands to install the TensorFlow
