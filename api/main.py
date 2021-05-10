@@ -2,8 +2,7 @@ import os
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from shutil import copyfileobj
-from typing import Dict, Set
-
+from typing import Set, Dict
 from fastapi import Depends, FastAPI, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -14,6 +13,10 @@ from database import crud, models
 from database.database import SessionLocal, engine
 from nlp.attn_captioning import generate_caption, get_similar_words
 from obj_detect.detector import detect_labels, init_detector
+
+# Development code
+from fastapi.middleware.cors import CORSMiddleware
+# End of development code
 
 
 class Context:
@@ -30,6 +33,16 @@ db_executor = ThreadPoolExecutor(max_workers=1)
 
 app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
+
+# Development code
+origins = [
+    'http://localhost:3000',
+    'localhost:3000'
+]
+app.add_middleware(
+    CORSMiddleware, allow_origins=origins, allow_credentials=True,
+    allow_methods=['*'], allow_headers=['*'])
+# End of development code
 
 
 # Dependency
@@ -90,7 +103,8 @@ async def root(request: Request) -> Context.templates.TemplateResponse:
 
 @app.post('/api/uploadFile')
 async def upload_file(
-        file: UploadFile = Form(...), db: Session = Depends(get_db)) -> Dict:
+        file: UploadFile = Form(...), db: Session = Depends(get_db)) \
+        -> Dict[str, bool]:
     if file.content_type.startswith('image/'):
         filepath = f'./static/uploads/{file.filename}'
         with open(filepath, 'wb') as buffer:

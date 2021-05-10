@@ -79,7 +79,7 @@ This application is built using the following frameworks:
 6. Enter the following commands to install the TensorFlow
    object-detection package:
    
-       cd models\research
+       cd research
        python -m pip install .
 7. Enter the following command to install spaCy's pretrained English pipeline
    model:
@@ -88,13 +88,16 @@ This application is built using the following frameworks:
 8. In your folder explorer, go to
    `<path-to-folder>\Windows_to_History\api\nlp\zip` (example in
    screenshot):
+   
    ![screenshot2.png](readme_images/screenshot2.png)
 9. Unzip the [7zip](https://www.7-zip.org/download.html) archive. You
    should see the following files appear after unzipping completes:
+   
    ![screenshot3.png](readme_images/screenshot3.png)
 10. Move the two unzipped files to
    `<path-to-folder>\Windows_to_History\api\nlp` (example in
    screenshot):
+    
    ![img.png](readme_images/screenshot4.png)
    
 Installation is now complete. You may proceed to delete the `models` and
